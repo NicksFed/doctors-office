@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Mvc;
 using DoctorsOffice.Models;
@@ -31,7 +32,7 @@ namespace DoctorsOffice.Controllers
     public ActionResult Create(Doctor doctor)
     {
       _db.Doctors.Add(doctor);
-      
+
       _db.SaveChanges();
       return RedirectToAction("Index");
     }
@@ -71,6 +72,36 @@ namespace DoctorsOffice.Controllers
     {
       Doctor thisDoctor = _db.Doctors.FirstOrDefault(doctor => doctor.DoctorId == id);
       _db.Doctors.Remove(thisDoctor);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    public ActionResult AddSpecialty(int id)
+    {
+      Doctor thisDoctor = _db.Doctors.FirstOrDefault(items => items.DoctorId == id);
+      ViewBag.SpecialtyId = new SelectList(_db.Specialties, "SpecialtyId", "Name");
+      return View(thisDoctor);
+    }
+
+    [HttpPost]
+    public ActionResult AddSpecialty(Doctor doctor, int specialtyId)
+    {
+      #nullable enable
+      DoctorSpecialty? joinEntity = _db.DoctorSpecialties.FirstOrDefault(join => (join.SpecialtyId == specialtyId && join.DoctorId == doctor.DoctorId));
+      #nullable disable
+      if (joinEntity == null && specialtyId != 0)
+      {
+        _db.DoctorSpecialties.Add(new DoctorSpecialty() { SpecialtyId = specialtyId, DoctorId = doctor.DoctorId });
+        _db.SaveChanges();
+      }
+      return RedirectToAction("Details", new { id = doctor.DoctorId });
+    }
+
+     [HttpPost]
+    public ActionResult DeleteJoin(int joinId)
+    {
+      DoctorSpecialty joinEntry = _db.DoctorSpecialties.FirstOrDefault(entry => entry.DoctorSpecialtyId == joinId);
+      _db.DoctorSpecialties.Remove(joinEntry);
       _db.SaveChanges();
       return RedirectToAction("Index");
     }

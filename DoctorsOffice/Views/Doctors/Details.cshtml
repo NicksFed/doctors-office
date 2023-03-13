@@ -12,8 +12,17 @@
 <ul>
   @foreach(DoctorSpecialty join in Model.JoinEntities) {
     <li>@join.Specialty.Name</li>
+    @using (Html.BeginForm("DeleteJoin", "Doctors"))
+      {
+        @Html.Hidden("joinId", @join.DoctorSpecialtyId)
+        <input type="submit" value="Delete"/>
+      }
   }
 </ul>
+
+<a href='@Url.Action("AddSpecialty", new { id = Model.DoctorId })'>
+  <button>Add a specialty</button>
+</a>
 
 @if (@Model.Patients.Count == 0)
 {

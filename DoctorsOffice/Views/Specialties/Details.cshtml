@@ -19,13 +19,26 @@ else
   @foreach(DoctorSpecialty join in Model.JoinEntities)
   {
     <li>@join.Doctor.Name</li>
+    @using (Html.BeginForm("DeleteJoin", "Specialties"))
+    {
+      @Html.Hidden("joinId", @join.DoctorSpecialtyId)
+      <input type="submit" value="Delete"/>
+    }
   }
   </ul>
 }
 <a href='@Url.Action("AddDoctor", new { id = Model.SpecialtyId })'>
-  <button>Add a Doctor</button>
+  <button class="green">Add a Doctor</button>
 </a>
 
 <a href='@Url.Action("Index")'>
   <button>Back To List</button>
+</a>
+
+<a href='@Url.Action("Edit", new { id = Model.SpecialtyId })'>
+  <button class="yellow">Edit</button>
+</a>
+
+<a href='@Url.Action("Delete", new { id = Model.SpecialtyId })'>
+  <button class="red">Delete</button>
 </a>

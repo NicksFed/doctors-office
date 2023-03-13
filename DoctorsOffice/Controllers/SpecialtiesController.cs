@@ -60,5 +60,43 @@ namespace DoctorsOffice.Controllers
       }
       return RedirectToAction("Details", new { id = specialty.SpecialtyId });
     }
+
+    public ActionResult Edit(int id)
+    {
+      Specialty thisSpecialty = _db.Specialties.FirstOrDefault(specialties => specialties.SpecialtyId == id);
+      return View(thisSpecialty);
+    }
+
+    [HttpPost]
+    public ActionResult Edit(Specialty specialty)
+    {
+      _db.Specialties.Update(specialty);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    public ActionResult Delete(int id)
+    {
+      Specialty thisSpecialty = _db.Specialties.FirstOrDefault(specialties => specialties.SpecialtyId == id);
+      return View(thisSpecialty);
+    }
+
+    [HttpPost, ActionName("Delete")]
+    public ActionResult DeleteConfirmed(int id)
+    {
+      Specialty thisSpecialty = _db.Specialties.FirstOrDefault(specialties => specialties.SpecialtyId == id);
+      _db.Specialties.Remove(thisSpecialty);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
+
+    [HttpPost]
+    public ActionResult DeleteJoin(int joinId)
+    {
+      DoctorSpecialty joinEntry = _db.DoctorSpecialties.FirstOrDefault(entry => entry.DoctorSpecialtyId == joinId);
+      _db.DoctorSpecialties.Remove(joinEntry);
+      _db.SaveChanges();
+      return RedirectToAction("Index");
+    }
   }
 }
